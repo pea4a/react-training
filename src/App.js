@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import PostItem from './components/PostItem';
 import PostList from './components/PostList';
+import MyButton from './components/UI/button/MyButton';
+import MyInput from './components/UI/input/MyInput';
 import './styles/App.css';
 const App = () => {
     const [posts, setPosts] = useState([
@@ -10,17 +12,39 @@ const App = () => {
         { id: 4, title: 'javaScript4', body: 'Description' },
         { id: 5, title: 'javaScript5', body: 'Description' },
     ])
-    const [posts2, setPosts2] = useState([
-        { id: 1, title: 'python1', body: 'Description' },
-        { id: 2, title: 'python2', body: 'Description' },
-        { id: 3, title: 'python3', body: 'Description' },
-        { id: 4, title: 'python4', body: 'Description' },
-        { id: 5, title: 'pythont5', body: 'Description' },
-    ])
+    const [post, setPost] = useState({
+        title: '',
+        body: '',
+    })
+
+    const addNewPost = (e) => {
+        e.preventDefault()
+
+        setPosts([...posts, { ...post, id: Date.now }])
+        setPost({
+            title: '',
+            body: '',
+        })
+    }
+
     return (
         <div className='App'>
-            <PostList posts={posts} title='post`s list 1' />
-            <PostList posts={posts2} title='post`s list 2' />
+            <form>
+                <MyInput
+                    value={post.title}
+                    onChange={event => setPost({ ...post, title: event.target.value })}
+
+                    type='text'
+                    placeholder='post`s name'
+                />
+                <MyInput
+                    value={post.body}
+                    onChange={event => setPost({ ...post, body: event.target.value })}
+                    type='text'
+                    placeholder='post`s description' />
+                <MyButton onClick={addNewPost}>add post</MyButton>
+            </form>
+            <PostList posts={posts} title='post`s about JS' />
         </div >
     )
 }
