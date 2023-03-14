@@ -9,17 +9,30 @@ import MySelect from './components/UI/select/MySelect';
 import './styles/App.css';
 const App = () => {
     const [posts, setPosts] = useState([
-        { id: 1, title: 'javaScript1', body: 'Description' },
-        { id: 2, title: 'javaScript2', body: 'Description' },
-        { id: 3, title: 'javaScript3', body: 'Description' },
-        { id: 4, title: 'javaScript4', body: 'Description' },
-        { id: 5, title: 'javaScript5', body: 'Description' },
+        { id: 1, title: 'AjavaScript1', body: 'GDescription' },
+        { id: 2, title: 'BjavaScript2', body: 'EDescription' },
+        { id: 3, title: 'FjavaScript3', body: 'ADescription' },
+        { id: 4, title: 'TjavaScript4', body: 'BDescription' },
+        { id: 5, title: 'GjavaScript5', body: 'QDescription' },
     ])
     const [selectedSort, setSelectedSort] = useState('')
+    const [searchQuery, setSearchQuery] = useState('')
+
+    function getSortedPosts() {
+        console.log('lol')
+        if (selectedSort) {
+            return [...posts].sort((a, b) => a[selectedSort].localeCompare(b[selectedSort]))
+        }
+
+        return posts
+
+    }
+
+    const sortedPosts = getSortedPosts()
 
     const sortPosts = (sort) => {
         setSelectedSort(sort)
-        console.log(sort);
+
     }
 
     const createPost = (newPost) => {
@@ -35,6 +48,11 @@ const App = () => {
             <PostForm create={createPost} />
             <br style={{ margin: '15px 0' }} />
             <div>
+                <MyInput
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                    placeholder='search...'
+                />
                 <MySelect
                     value={selectedSort}
                     onChange={sortPosts}
@@ -47,7 +65,7 @@ const App = () => {
             </div>
             {posts.length !== 0
                 ?
-                <PostList remove={removePost} posts={posts} title='post`s about JS' />
+                <PostList remove={removePost} posts={sortedPosts} title='post`s about JS' />
                 :
                 <h1 style={{ textAlign: 'center' }}>
                     posts not found!
