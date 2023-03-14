@@ -1,8 +1,11 @@
+import { red } from '@mui/material/colors';
 import React, { useRef, useState } from 'react';
+import PostForm from './components/PostForm';
 import PostItem from './components/PostItem';
 import PostList from './components/PostList';
 import MyButton from './components/UI/button/MyButton';
 import MyInput from './components/UI/input/MyInput';
+import MySelect from './components/UI/select/MySelect';
 import './styles/App.css';
 const App = () => {
     const [posts, setPosts] = useState([
@@ -12,39 +15,45 @@ const App = () => {
         { id: 4, title: 'javaScript4', body: 'Description' },
         { id: 5, title: 'javaScript5', body: 'Description' },
     ])
-    const [post, setPost] = useState({
-        title: '',
-        body: '',
-    })
+    const [selectedSort, setSelectedSort] = useState('')
 
-    const addNewPost = (e) => {
-        e.preventDefault()
+    const sortPosts = (sort) => {
+        setSelectedSort(sort)
+        console.log(sort);
+    }
 
-        setPosts([...posts, { ...post, id: Date.now }])
-        setPost({
-            title: '',
-            body: '',
-        })
+    const createPost = (newPost) => {
+        setPosts([...posts, newPost])
+    }
+
+    const removePost = (post) => {
+        setPosts(posts.filter(p => p.id !== post.id))
     }
 
     return (
         <div className='App'>
-            <form>
-                <MyInput
-                    value={post.title}
-                    onChange={event => setPost({ ...post, title: event.target.value })}
-
-                    type='text'
-                    placeholder='post`s name'
+            <PostForm create={createPost} />
+            <br style={{ margin: '15px 0' }} />
+            <div>
+                <MySelect
+                    value={selectedSort}
+                    onChange={sortPosts}
+                    defaultValue='sort by'
+                    options={[
+                        { value: 'title', name: 'by name' },
+                        { value: 'body', name: 'by desc' },
+                    ]}
                 />
-                <MyInput
-                    value={post.body}
-                    onChange={event => setPost({ ...post, body: event.target.value })}
-                    type='text'
-                    placeholder='post`s description' />
-                <MyButton onClick={addNewPost}>add post</MyButton>
-            </form>
-            <PostList posts={posts} title='post`s about JS' />
+            </div>
+            {posts.length !== 0
+                ?
+                <PostList remove={removePost} posts={posts} title='post`s about JS' />
+                :
+                <h1 style={{ textAlign: 'center' }}>
+                    posts not found!
+                </h1>
+            }
+
         </div >
     )
 }
