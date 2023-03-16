@@ -1,4 +1,5 @@
 import { red } from '@mui/material/colors';
+import axios from 'axios';
 import React, { useMemo, useRef, useState } from 'react';
 import PostFilter from './components/PostFilter';
 import PostForm from './components/PostForm';
@@ -8,35 +9,23 @@ import MyButton from './components/UI/button/MyButton';
 import MyInput from './components/UI/input/MyInput';
 import MyModal from './components/UI/MyModal/MyModal';
 import MySelect from './components/UI/select/MySelect';
+import { usePosts } from './hooks/usePost';
 import './styles/App.css';
 const App = () => {
-    const [posts, setPosts] = useState([
-        { id: 1, title: 'AjavaScript1', body: 'GDescription' },
-        { id: 2, title: 'BjavaScript2', body: 'EDescription' },
-        { id: 3, title: 'FjavaScript3', body: 'ADescription' },
-        { id: 4, title: 'TjavaScript4', body: 'BDescription' },
-        { id: 5, title: 'GjavaScript5', body: 'QDescription' },
-    ])
+    const [posts, setPosts] = useState([])
     const [filter, setFilter] = useState({ sort: '', query: '' })
     const [modal, setModal] = useState(false)
-    const sortedPosts = useMemo(() => {
-        if (filter.sort) {
-            console.log('lol')
-            return [...posts].sort((a, b) => a[filter.sort].localeCompare(b[filter.sort]))
-        }
-
-        return posts
-    }, [filter.sort, posts])
-
-    const sortedAndSearchedPosts = useMemo(() => {
-        return sortedPosts.filter(post => post.title.toLocaleLowerCase().includes(filter.query.toLocaleLowerCase()))
-    }, [filter.query, sortedPosts]
-    )
+    const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query)
 
 
     const createPost = (newPost) => {
         setPosts([...posts, newPost])
         setModal(false)
+    }
+
+    async function fetchPosts() {
+        const response = await axios.get('https://jsonplaceholder.typicode.com/posts')
+        setPosts(response.data)
     }
 
     const removePost = (post) => {
@@ -45,7 +34,8 @@ const App = () => {
 
     return (
         <div className='App'>
-            <MyButton onClick={() => setModal(true)}>
+            <button onClick={fetchPosts}>get posts</button>
+            <MyButton style={{ marginTop: 30 }} onClick={() => setModal(true)}>
                 create post
             </MyButton>
             <MyModal visible={modal} setVisible={setModal}>
