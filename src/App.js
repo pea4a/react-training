@@ -51,7 +51,7 @@ const App = () => {
     return (
         <div className='App'>
 
-            <MyButton style={{ marginTop: 30 }} onClick={() => setModal(true)}>
+            <MyButton style={{ marginTop: 35 }} onClick={() => setModal(true)}>
                 create post
             </MyButton>
             <MyModal visible={modal} setVisible={setModal}>
